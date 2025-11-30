@@ -1,0 +1,30 @@
+{
+  "name": "free-spotify-tokens",
+  "version": "1.0.0",
+  "description": "Free spotify tokens auto fetcher and updater every 30 minutes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0",
+    "update-tokens": "node index.js"
+  },
+  "keywords": [
+    "spotify",
+    "tokens",
+    "automation",
+    "github-actions"
+  ],
+  "author": "Gifted Tech",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "*",
+    "fs": "*",
+    "path": "*"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mauricegift/free-spotify-tokens"
+  }
+}
