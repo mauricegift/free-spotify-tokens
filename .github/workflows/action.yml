@@ -1,0 +1,57 @@
+name: Spotify Tokens Auto Updater
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+
+jobs:
+  update-tokens:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write  
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Run token updater
+      run: npm run update-tokens
+      env:
+        GIFTED_ENDPOINT: ${{ secrets.GIFTED_ENDPOINT }}
+        GIFTED_CREDENTIALS: ${{ secrets.GIFTED_CREDENTIALS }}
+        
+    - name: Commit files
+      run: |
+        git config --local user.email ${{ secrets.GIT_EMAIL }}
+        git config --local user.name ${{ secrets.GIT_NAME }}
+        git add tokens.json
+        git commit -am "New Tokens - $(date '+%A %d-%m-%Y %H:%M:%S %Z')"
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main  
