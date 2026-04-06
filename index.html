@@ -862,8 +862,9 @@ setInterval(loadToken, 30 * 60 * 1000);
 
 // ══ COPY TOKEN ════════════════════════════════════════════════════════════
 function copyToken() {
-  if (!currentToken) return;
-  navigator.clipboard.writeText(currentToken).then(() => {
+  var tok = currentToken || window._spotifyToken || '';
+  if (!tok) return;
+  navigator.clipboard.writeText(tok).then(() => {
     const btn = document.getElementById('copy-btn');
     btn.classList.add('copied');
     btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
