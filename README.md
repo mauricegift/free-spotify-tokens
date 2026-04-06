@@ -1,6 +1,6 @@
 # free-spotify-token
 
-> **1 fresh Spotify access token** — updated every **20 minutes**
+> **1 fresh Spotify access token** — updated every **30 minutes**
 
 A free, continuously refreshed **Spotify Web Player access token** — no login, no API keys, no cost. Works with all public Spotify API endpoints. Powered by a reverse-engineered TOTP flow identical to the official web player.
 
@@ -87,7 +87,7 @@ Works with any **public** Spotify API endpoint, including:
 
 ## Notes
 
-- Token expires roughly **1 hour** after issue but is refreshed every **20 minutes** so it's always fresh
+- Token expires roughly **1 hour** after issue but is refreshed every **30 minutes** so it's always fresh
 - This is an **anonymous web-player token** — user-specific endpoints (liked songs, playlists) require OAuth login
 - Runs 24/7 on a VPS by [Gifted Tech](https://giftedtech.co.ke)
 
