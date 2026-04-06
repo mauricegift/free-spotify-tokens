@@ -480,9 +480,6 @@ footer a:hover { text-decoration: underline; }
 }
 @media(min-width:641px) { .hamburger { display: none !important; } }
 
-/* ── AOS safety: show elements before AOS initialises ── */
-html:not(.aos-initialized) [data-aos] { opacity: 1 !important; transform: none !important; }
-
 /* ── Hero CSS animations (no AOS needed — always in viewport) ── */
 @keyframes heroFadeDown {
   from { opacity: 0; transform: translateY(-24px); }
@@ -963,12 +960,16 @@ window.addEventListener('resize', () => { resize(); initDots(); });
 // AOS — init with mirror:true so it animates both ways
 // ══════════════════════════════════════════════════════════
 AOS.init({
-  duration: 650,
+  duration: 700,
   once: false,
   mirror: true,
-  offset: 80,
-  easing: 'ease-out-cubic',
+  offset: 60,
+  delay: 0,
+  easing: 'ease-out-quad',
+  anchorPlacement: 'top-bottom',
 });
+// Re-run after images/fonts settle so nothing is missed
+window.addEventListener('load', () => AOS.refresh());
 
 // ══════════════════════════════════════════════════════════
 // TOKEN FETCH
@@ -999,7 +1000,7 @@ async function loadToken() {
 }
 
 loadToken();
-setInterval(loadToken, 5 * 60 * 1000);
+setInterval(loadToken, 30 * 60 * 1000);
 
 // ══════════════════════════════════════════════════════════
 // COPY TOKEN
