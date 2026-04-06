@@ -750,35 +750,43 @@ window.addEventListener('resize', () => { resize(); initDots(); });
 // ══ TOKEN FETCH ═══════════════════════════════════════════════════════════
 let currentToken = '';
 
+async function tryFetch(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
 async function loadToken() {
+  const t = Date.now();
+  // Primary: relative path (same-origin, always works on GitHub Pages)
+  // Fallback: raw GitHub (cross-origin, CORS allowed)
   const URLS = [
-    'https://raw.githubusercontent.com/mauricegift/free-spotify-token/main/token.json',
-    'https://stoken.giftedtech.co.ke/token.json',
+    '/token.json?' + t,
+    'https://raw.githubusercontent.com/mauricegift/free-spotify-token/main/token.json?' + t,
   ];
+
   let data = null;
   for (const url of URLS) {
-    try {
-      const res = await fetch(url + '?t=' + Date.now(), { cache: 'no-store' });
-      if (!res.ok) continue;
-      data = await res.json();
-      if (data && data.token) break;
-    } catch { continue; }
+    try { data = await tryFetch(url); if (data && data.token) break; } catch {}
   }
-  try {
-    if (!data || !data.token) throw new Error('no token');
+
+  const display = document.getElementById('token-display');
+  const expiry  = document.getElementById('expiry-text');
+  const updated = document.getElementById('last-updated');
+
+  if (data && data.token) {
     currentToken = data.token;
-    document.getElementById('token-display').textContent = currentToken;
-    if (data.expires_in) {
-      document.getElementById('expiry-text').textContent =
-        `Expires in ~${Math.floor(data.expires_in/60)} min`;
+    display.textContent = currentToken;
+    if (expiry) expiry.textContent = data.expires_in
+      ? 'Expires in ~' + Math.max(0, Math.floor(data.expires_in / 60)) + ' min'
+      : '';
+    if (updated && data.last_updated) {
+      try { updated.textContent = new Date(data.last_updated).toLocaleString(); }
+      catch { updated.textContent = data.last_updated; }
     }
-    if (data.last_updated) {
-      document.getElementById('last-updated').textContent =
-        new Date(data.last_updated).toLocaleString('en-KE',{timeZone:'Africa/Nairobi'});
-    }
-  } catch {
-    document.getElementById('token-display').textContent = 'Failed to load — try refreshing';
-    document.getElementById('expiry-text').textContent = 'Unavailable';
+  } else {
+    display.textContent = 'Temporarily unavailable — please refresh';
+    if (expiry) expiry.textContent = 'Unavailable';
   }
 }
 loadToken();
