@@ -750,29 +750,33 @@ window.addEventListener('resize', () => { resize(); initDots(); });
 // ══ TOKEN FETCH ═══════════════════════════════════════════════════════════
 let currentToken = '';
 
-async function tryFetch(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+function xhrGet(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.timeout = 8000;
+    xhr.onload  = () => xhr.status === 200 ? resolve(JSON.parse(xhr.responseText)) : reject(new Error('HTTP ' + xhr.status));
+    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.ontimeout = () => reject(new Error('Timeout'));
+    xhr.send();
+  });
 }
 
 async function loadToken() {
-  const t = Date.now();
-  // Primary: relative path (same-origin, always works on GitHub Pages)
-  // Fallback: raw GitHub (cross-origin, CORS allowed)
-  const URLS = [
-    '/token.json?' + t,
-    'https://raw.githubusercontent.com/mauricegift/free-spotify-token/main/token.json?' + t,
-  ];
-
-  let data = null;
-  for (const url of URLS) {
-    try { data = await tryFetch(url); if (data && data.token) break; } catch {}
-  }
-
   const display = document.getElementById('token-display');
   const expiry  = document.getElementById('expiry-text');
   const updated = document.getElementById('last-updated');
+
+  const URLS = [
+    'https://stoken.giftedtech.co.ke/token.json?' + Date.now(),
+    'https://raw.githubusercontent.com/mauricegift/free-spotify-token/main/token.json',
+  ];
+
+  let data = null, lastErr = '';
+  for (const url of URLS) {
+    try { data = await xhrGet(url); if (data && data.token) break; }
+    catch (e) { lastErr = e.message; }
+  }
 
   if (data && data.token) {
     currentToken = data.token;
@@ -785,7 +789,9 @@ async function loadToken() {
       catch { updated.textContent = data.last_updated; }
     }
   } else {
-    display.textContent = 'Temporarily unavailable — please refresh';
+    display.textContent = 'Could not load token (' + (lastErr || 'unknown') + ') — tap to retry';
+    display.style.cursor = 'pointer';
+    display.onclick = () => { display.textContent = 'Retrying…'; display.onclick = null; loadToken(); };
     if (expiry) expiry.textContent = 'Unavailable';
   }
 }
