@@ -1,404 +1,580 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Free Spotify Token — Gifted Tech</title>
-<meta name="description" content="A free, continuously refreshed Spotify access token updated every 20 minutes. No login, no API keys."/>
-<meta name="keywords" content="spotify token, free spotify access token, spotify api, spotify web player token"/>
+<meta name="description" content="A free, continuously refreshed Spotify access token updated every 20 minutes. No login, no API keys required."/>
+<meta name="keywords" content="spotify token, free spotify access token, spotify api, spotify web player token, bearer token"/>
 <meta name="author" content="mauricegift — Gifted Tech"/>
 <link rel="canonical" href="https://stoken.giftedtech.co.ke"/>
 <meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Free Spotify Token by Gifted Tech"/>
 <meta property="og:title" content="Free Spotify Token — Gifted Tech"/>
 <meta property="og:description" content="Free Spotify access token refreshed every 20 minutes. No login required."/>
 <meta property="og:url" content="https://stoken.giftedtech.co.ke"/>
-<meta property="og:image" content="https://files.catbox.moe/b6kkkk.png"/>
+<meta property="og:image" content="https://files.catbox.moe/y1crqr.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Free Spotify Token — Gifted Tech"/>
-<meta name="twitter:description" content="Free Spotify access token refreshed every 20 minutes."/>
-<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/512px-Spotify_icon.svg.png"/>
+<meta name="twitter:description" content="Free Spotify access token refreshed every 20 minutes. No login required."/>
+<meta name="twitter:image" content="https://files.catbox.moe/y1crqr.png"/>
+<link rel="icon" type="image/png" href="https://files.catbox.moe/y1crqr.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
 <style>
-  :root {
-    --green: #1DB954;
-    --green-dim: #158a3e;
-    --green-glow: rgba(29,185,84,0.25);
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #1a1a1a;
-    --border: rgba(255,255,255,0.08);
-    --text: #ffffff;
-    --muted: #a3a3a3;
-    --radius: 16px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    line-height: 1.6;
-  }
+/* ═══════════════════════════ THEME TOKENS ═══════════════════════════ */
+[data-theme="light"] {
+  --bg:          #f5f7fa;
+  --bg2:         #ffffff;
+  --surface:     #ffffff;
+  --surface2:    #f0f2f5;
+  --border:      rgba(0,0,0,0.08);
+  --border2:     rgba(0,0,0,0.12);
+  --text:        #111827;
+  --text2:       #374151;
+  --muted:       #6b7280;
+  --green:       #1DB954;
+  --green-dim:   #17a34a;
+  --green-glow:  rgba(29,185,84,0.12);
+  --green-glow2: rgba(29,185,84,0.20);
+  --shadow:      0 2px 16px rgba(0,0,0,0.08);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.12);
+  --overlay:     rgba(0,0,0,0.45);
+  --header-bg:   rgba(255,255,255,0.92);
+  --code-bg:     #f8fafc;
+  --code-text:   #1e293b;
+  --sidebar-bg:  #ffffff;
+}
+[data-theme="dark"] {
+  --bg:          #0a0a0a;
+  --bg2:         #111111;
+  --surface:     #141414;
+  --surface2:    #1c1c1c;
+  --border:      rgba(255,255,255,0.08);
+  --border2:     rgba(255,255,255,0.13);
+  --text:        #f1f5f9;
+  --text2:       #cbd5e1;
+  --muted:       #94a3b8;
+  --green:       #1DB954;
+  --green-dim:   #158a3e;
+  --green-glow:  rgba(29,185,84,0.15);
+  --green-glow2: rgba(29,185,84,0.25);
+  --shadow:      0 2px 16px rgba(0,0,0,0.4);
+  --shadow-lg:   0 8px 40px rgba(0,0,0,0.5);
+  --overlay:     rgba(0,0,0,0.65);
+  --header-bg:   rgba(10,10,10,0.92);
+  --code-bg:     #0f172a;
+  --code-text:   #e2e8f0;
+  --sidebar-bg:  #141414;
+}
 
-  /* ── Canvas Background ── */
-  #bg-canvas {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
+/* ═══════════════════════════ RESET & BASE ═══════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  transition: background .3s, color .3s;
+}
 
-  /* ── Layout ── */
-  .page { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 20px; }
+/* ═══════════════════════════ CANVAS BG ═══════════════════════════ */
+#bg-canvas {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 1; transition: opacity .4s;
+}
 
-  /* ── Header ── */
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10,10,10,0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-decoration: none;
-    color: var(--text);
-  }
-  .logo img { width: 28px; height: 28px; border-radius: 50%; }
-  .logo span { color: var(--green); }
-  .header-links { display: flex; align-items: center; gap: 12px; }
-  .header-links a {
-    color: var(--muted);
-    font-size: 0.85rem;
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 50px;
-    border: 1px solid var(--border);
-    transition: all .2s;
-  }
-  .header-links a:hover { color: var(--text); border-color: var(--green); background: var(--green-glow); }
+/* ═══════════════════════════ SIDEBAR OVERLAY ═══════════════════════════ */
+#sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--overlay);
+  backdrop-filter: blur(3px);
+}
+#sidebar-overlay.open { display: block; }
 
-  /* ── Hero ── */
-  .hero {
-    text-align: center;
-    padding: 80px 0 60px;
-    animation: fadeUp .7s ease both;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--green-glow);
-    border: 1px solid rgba(29,185,84,0.4);
-    color: var(--green);
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 6px 16px;
-    border-radius: 50px;
-    margin-bottom: 28px;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-  }
-  .pulse-dot {
-    width: 7px; height: 7px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 1.8s ease infinite;
-  }
-  .hero h1 {
-    font-size: clamp(2.2rem, 6vw, 3.8rem);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -.02em;
-    margin-bottom: 20px;
-  }
-  .hero h1 em {
-    font-style: normal;
-    color: var(--green);
-    position: relative;
-  }
-  .hero p {
-    font-size: 1.1rem;
-    color: var(--muted);
-    max-width: 560px;
-    margin: 0 auto 40px;
-  }
-  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all .22s;
-    border: none;
-  }
-  .btn-primary {
-    background: var(--green);
-    color: #000;
-  }
-  .btn-primary:hover { background: #22d160; transform: translateY(-1px); box-shadow: 0 8px 24px var(--green-glow); }
-  .btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-outline:hover { border-color: var(--green); background: var(--green-glow); transform: translateY(-1px); }
+/* ═══════════════════════════ SIDEBAR ═══════════════════════════ */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 280px;
+  z-index: 300;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border2);
+  border-radius: 0 24px 24px 0;
+  box-shadow: var(--shadow-lg);
+  padding: 0;
+  transform: translateX(-100%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+#sidebar.open { transform: translateX(0); }
 
-  /* ── Stats Row ── */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin: 0 0 56px;
-    animation: fadeUp .7s ease .1s both;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px 20px;
-    text-align: center;
-    transition: border-color .2s, transform .2s;
-  }
-  .stat-card:hover { border-color: rgba(29,185,84,0.4); transform: translateY(-2px); }
-  .stat-icon { font-size: 1.5rem; margin-bottom: 10px; }
-  .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--green); margin-bottom: 4px; }
-  .stat-label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+.sidebar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 1.05rem; color: var(--text);
+  text-decoration: none;
+}
+.sidebar-logo img { width: 28px; height: 28px; border-radius: 8px; }
+.sidebar-logo span { color: var(--green); }
+.sidebar-close {
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; font-size: 1rem;
+  transition: all .2s;
+}
+.sidebar-close:hover { color: var(--text); border-color: var(--green); }
 
-  /* ── Token Card ── */
-  .section { margin-bottom: 48px; animation: fadeUp .7s ease .15s both; }
-  .section-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.sidebar-nav {
+  flex: 1; padding: 16px 12px;
+  display: flex; flex-direction: column; gap: 4px;
+  overflow-y: auto;
+}
+.sidebar-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 12px;
+  color: var(--text2); font-size: 0.9rem; font-weight: 500;
+  text-decoration: none; transition: all .2s;
+}
+.sidebar-link i { width: 18px; text-align: center; color: var(--muted); transition: color .2s; }
+.sidebar-link:hover, .sidebar-link.active {
+  background: var(--green-glow); color: var(--green);
+}
+.sidebar-link:hover i, .sidebar-link.active i { color: var(--green); }
 
-  .token-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .token-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-  .token-header-left { display: flex; align-items: center; gap: 10px; }
-  .token-type {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--green);
-    background: var(--green-glow);
-    border: 1px solid rgba(29,185,84,.3);
-    padding: 3px 10px;
-    border-radius: 50px;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-  }
-  .token-expiry { font-size: 0.82rem; color: var(--muted); }
-  .copy-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.82rem;
-    padding: 6px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all .2s;
-    font-family: inherit;
-  }
-  .copy-btn:hover { border-color: var(--green); color: var(--green); }
-  .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-glow); }
-  .token-body {
-    padding: 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    color: #cdd6f4;
-    word-break: break-all;
-    line-height: 1.7;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-  }
-  .token-loading { color: var(--muted); font-style: italic; font-family: inherit; }
-  .token-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 20px;
-    border-top: 1px solid var(--border);
-    background: var(--surface2);
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .token-url a {
-    color: var(--green);
-    text-decoration: none;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-  }
-  .token-url a:hover { text-decoration: underline; }
+.sidebar-section {
+  font-size: 0.7rem; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: 12px 14px 4px;
+}
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
 
-  /* ── Code Blocks ── */
-  .code-tabs { display: flex; gap: 0; border-radius: var(--radius) var(--radius) 0 0; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); border-bottom: none; }
-  .code-tab {
-    padding: 10px 18px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    border-right: 1px solid var(--border);
-    transition: all .2s;
-    user-select: none;
-  }
-  .code-tab:last-child { border-right: none; }
-  .code-tab.active { color: var(--green); background: var(--green-glow); }
-  .code-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0 0 var(--radius) var(--radius);
-    position: relative;
-    display: none;
-  }
-  .code-block.active { display: block; }
-  .code-block pre {
-    padding: 20px;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    line-height: 1.7;
-    color: #cdd6f4;
-  }
-  .code-block .kw { color: #cba6f7; }
-  .code-block .str { color: #a6e3a1; }
-  .code-block .cmt { color: #6c7086; font-style: italic; }
-  .code-block .fn { color: #89b4fa; }
-  .code-block .num { color: #fab387; }
-  .code-copy {
-    position: absolute;
-    top: 12px; right: 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all .2s;
-  }
-  .code-copy:hover { border-color: var(--green); color: var(--green); }
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--muted); text-align: center;
+}
+.sidebar-footer a { color: var(--green); text-decoration: none; }
 
-  /* ── Endpoints Table ── */
-  .table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  table { width: 100%; border-collapse: collapse; }
-  thead { background: var(--surface2); }
-  th { padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid var(--border); }
-  td { padding: 12px 16px; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(255,255,255,0.02); }
-  td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--green); }
-  td:last-child { color: var(--muted); }
+/* ═══════════════════════════ HEADER ═══════════════════════════ */
+header {
+  position: sticky; top: 12px; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  height: 56px;
+  margin: 12px 16px 0;
+  background: var(--header-bg);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background .3s, border-color .3s;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.hamburger {
+  display: none;
+  width: 36px; height: 36px; border-radius: 10px;
+  align-items: center; justify-content: center;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text2); cursor: pointer; font-size: 0.95rem;
+  transition: all .2s; flex-shrink: 0;
+}
+.hamburger:hover { border-color: var(--green); color: var(--green); }
+.logo {
+  display: flex; align-items: center; gap: 9px;
+  font-weight: 700; font-size: 1.05rem;
+  text-decoration: none; color: var(--text);
+}
+.logo img { width: 26px; height: 26px; border-radius: 7px; }
+.logo span { color: var(--green); }
 
-  /* ── Footer ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 28px 0;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.85rem;
-    animation: fadeUp .7s ease .3s both;
-  }
-  footer a { color: var(--green); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
+.header-nav { display: flex; align-items: center; gap: 4px; }
+.header-nav a {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--muted); font-size: 0.85rem; font-weight: 500;
+  text-decoration: none; padding: 7px 13px; border-radius: 10px;
+  transition: all .2s;
+}
+.header-nav a:hover { color: var(--green); background: var(--green-glow); }
 
-  /* ── Animations ── */
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(.85); } }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin .7s linear infinite; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.theme-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; font-size: 0.9rem;
+  transition: all .2s;
+}
+.theme-btn:hover { border-color: var(--green); color: var(--green); }
+.btn-sm {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 10px;
+  background: var(--green); color: #000;
+  font-size: 0.82rem; font-weight: 700;
+  text-decoration: none; transition: all .2s;
+}
+.btn-sm:hover { background: #22d160; transform: translateY(-1px); }
 
-  /* ── Responsive ── */
-  @media(max-width:600px){
-    .stats { grid-template-columns: 1fr 1fr; }
-    .stats .stat-card:last-child { grid-column: 1/-1; }
-    .hero { padding: 50px 0 40px; }
-    .hero-actions { flex-direction: column; align-items: center; }
-    .token-footer { flex-direction: column; gap: 8px; align-items: flex-start; }
-    header { flex-wrap: wrap; gap: 10px; }
-  }
+/* ═══════════════════════════ LAYOUT ═══════════════════════════ */
+.page {
+  position: relative; z-index: 1;
+  max-width: 880px; margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* ═══════════════════════════ HERO ═══════════════════════════ */
+.hero {
+  text-align: center;
+  padding: 72px 0 56px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--green-glow); border: 1px solid rgba(29,185,84,.35);
+  color: var(--green); font-size: 0.75rem; font-weight: 700;
+  padding: 6px 16px; border-radius: 50px; margin-bottom: 28px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.pulse-dot {
+  width: 7px; height: 7px; background: var(--green);
+  border-radius: 50%; animation: pulse 1.8s ease infinite;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -.02em; margin-bottom: 20px;
+}
+.hero h1 em { font-style: normal; color: var(--green); }
+.hero p {
+  font-size: 1.05rem; color: var(--muted);
+  max-width: 520px; margin: 0 auto 40px;
+}
+.hero-actions {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 50px;
+  font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; text-decoration: none; border: none;
+  transition: all .22s; font-family: inherit;
+}
+.btn-primary { background: var(--green); color: #000; }
+.btn-primary:hover {
+  background: #22d160; transform: translateY(-2px);
+  box-shadow: 0 8px 28px var(--green-glow2);
+}
+.btn-outline {
+  background: transparent; color: var(--text);
+  border: 1.5px solid var(--border2);
+}
+.btn-outline:hover {
+  border-color: var(--green); background: var(--green-glow);
+  transform: translateY(-2px); color: var(--green);
+}
+
+/* ═══════════════════════════ STATS ═══════════════════════════ */
+.stats {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 14px; margin-bottom: 52px;
+}
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; padding: 24px 16px; text-align: center;
+  box-shadow: var(--shadow);
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.stat-card:hover {
+  border-color: rgba(29,185,84,.4); transform: translateY(-3px);
+  box-shadow: 0 12px 32px var(--green-glow2);
+}
+.stat-icon { font-size: 1.6rem; margin-bottom: 10px; }
+.stat-value { font-size: 1.6rem; font-weight: 800; color: var(--green); margin-bottom: 4px; }
+.stat-label { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+
+/* ═══════════════════════════ SECTIONS ═══════════════════════════ */
+.section { margin-bottom: 48px; }
+.section-title {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.78rem; font-weight: 800; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px;
+}
+.section-title::before {
+  content: ''; width: 4px; height: 18px;
+  background: var(--green); border-radius: 2px; flex-shrink: 0;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ═══════════════════════════ TOKEN CARD ═══════════════════════════ */
+.token-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden; box-shadow: var(--shadow);
+}
+.token-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.token-header-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; gap: 8px; }
+.badge {
+  font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 50px;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.badge-green {
+  background: var(--green-glow); border: 1px solid rgba(29,185,84,.35); color: var(--green);
+}
+.badge-blue {
+  background: rgba(96,165,250,.12); border: 1px solid rgba(96,165,250,.3); color: #60a5fa;
+}
+.token-expiry { font-size: 0.82rem; color: var(--muted); }
+.copy-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--muted); font-size: 0.82rem; padding: 7px 14px;
+  border-radius: 10px; cursor: pointer; transition: all .2s; font-family: inherit;
+}
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+.token-body {
+  padding: 20px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+  color: var(--code-text); word-break: break-all; line-height: 1.7; min-height: 82px;
+  display: flex; align-items: center;
+  background: var(--code-bg);
+}
+.token-loading { color: var(--muted); font-style: italic; font-family: inherit; }
+.token-footer {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  padding: 12px 20px; border-top: 1px solid var(--border);
+  background: var(--surface2); font-size: 0.8rem; color: var(--muted);
+}
+.token-url a {
+  color: var(--green); text-decoration: none;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.77rem;
+}
+.token-url a:hover { text-decoration: underline; }
+
+/* ═══════════════════════════ CODE TABS ═══════════════════════════ */
+.code-tabs-wrapper { border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+.code-tabs {
+  display: flex; background: var(--surface2);
+  border: 1px solid var(--border); border-bottom: none;
+  border-radius: 18px 18px 0 0; overflow: hidden;
+}
+.code-tab {
+  padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+  color: var(--muted); cursor: pointer; border-right: 1px solid var(--border);
+  transition: all .2s; user-select: none;
+}
+.code-tab:last-child { border-right: none; }
+.code-tab.active { color: var(--green); background: var(--green-glow); }
+.code-block {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 0 0 18px 18px; position: relative; display: none;
+}
+.code-block.active { display: block; }
+.code-block pre {
+  padding: 20px; overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  line-height: 1.75; color: var(--code-text);
+}
+[data-theme="light"] .kw { color: #7c3aed; }
+[data-theme="light"] .str { color: #16a34a; }
+[data-theme="light"] .cmt { color: #9ca3af; font-style: italic; }
+[data-theme="light"] .fn  { color: #2563eb; }
+[data-theme="dark"]  .kw  { color: #cba6f7; }
+[data-theme="dark"]  .str { color: #a6e3a1; }
+[data-theme="dark"]  .cmt { color: #6c7086; font-style: italic; }
+[data-theme="dark"]  .fn  { color: #89b4fa; }
+.code-copy {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--muted); font-size: 0.75rem; padding: 4px 10px;
+  border-radius: 7px; cursor: pointer; font-family: inherit; transition: all .2s;
+}
+.code-copy:hover { border-color: var(--green); color: var(--green); }
+
+/* ═══════════════════════════ TABLE ═══════════════════════════ */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden; box-shadow: var(--shadow);
+}
+table { width: 100%; border-collapse: collapse; }
+thead { background: var(--surface2); }
+th {
+  padding: 12px 18px; text-align: left; font-size: 0.78rem;
+  font-weight: 800; color: var(--muted); text-transform: uppercase;
+  letter-spacing: .07em; border-bottom: 1px solid var(--border);
+}
+td { padding: 12px 18px; font-size: 0.85rem; border-bottom: 1px solid var(--border); color: var(--text2); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--green-glow); }
+td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--green); }
+
+/* ═══════════════════════════ NOTES ═══════════════════════════ */
+.note-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--green); border-radius: 14px;
+  padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 12px;
+  font-size: 0.875rem; color: var(--text2);
+}
+.note-card i { color: var(--green); margin-top: 2px; flex-shrink: 0; }
+
+/* ═══════════════════════════ FOOTER ═══════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  margin: 40px 16px 16px;
+  padding: 24px 24px;
+  text-align: center; color: var(--muted); font-size: 0.85rem;
+  background: var(--surface); border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+footer a { color: var(--green); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ═══════════════════════════ SPINNER ═══════════════════════════ */
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid var(--border2); border-top-color: var(--green);
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+
+/* ═══════════════════════════ ANIMATIONS ═══════════════════════════ */
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ═══════════════════════════ RESPONSIVE ═══════════════════════════ */
+@media(max-width:640px) {
+  header { margin: 8px 8px 0; padding: 0 12px; }
+  .hamburger { display: flex; }
+  .header-nav { display: none; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stats .stat-card:last-child { grid-column: 1/-1; }
+  .hero { padding: 48px 0 36px; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .token-header { flex-wrap: wrap; gap: 10px; }
+  .page { padding: 0 12px 40px; }
+  table { font-size: 0.8rem; }
+  th, td { padding: 10px 12px; }
+}
+@media(min-width:641px) { .hamburger { display: none !important; } }
 </style>
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-<div class="page">
-  <header>
-    <a class="logo" href="/">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/512px-Spotify_icon.svg.png" alt="Spotify"/>
+<!-- ─── SIDEBAR ─── -->
+<nav id="sidebar" aria-label="Navigation sidebar">
+  <div class="sidebar-header">
+    <a class="sidebar-logo" href="/">
+      <img src="https://files.catbox.moe/y1crqr.png" alt="stoken"/>
       Free<span>Token</span>
     </a>
-    <div class="header-links">
-      <a href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener">
-        <i class="fab fa-github"></i> GitHub
-      </a>
-      <a href="tokens.json" target="_blank">
-        <i class="fas fa-code"></i> JSON
-      </a>
-    </div>
-  </header>
+    <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close sidebar">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-nav">
+    <span class="sidebar-section">Navigation</span>
+    <a class="sidebar-link" href="#token" onclick="closeSidebar()">
+      <i class="fas fa-key"></i> Live Token
+    </a>
+    <a class="sidebar-link" href="#usage" onclick="closeSidebar()">
+      <i class="fas fa-code"></i> Usage Examples
+    </a>
+    <a class="sidebar-link" href="#endpoints" onclick="closeSidebar()">
+      <i class="fas fa-plug"></i> Endpoints
+    </a>
+    <a class="sidebar-link" href="#notes" onclick="closeSidebar()">
+      <i class="fas fa-info-circle"></i> Notes
+    </a>
+
+    <div class="sidebar-divider"></div>
+    <span class="sidebar-section">Links</span>
+
+    <a class="sidebar-link" href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener" onclick="closeSidebar()">
+      <i class="fab fa-github"></i> GitHub Repository
+    </a>
+    <a class="sidebar-link" href="token.json" target="_blank" onclick="closeSidebar()">
+      <i class="fas fa-file-code"></i> token.json
+    </a>
+    <a class="sidebar-link" href="https://giftedtech.co.ke" target="_blank" rel="noopener" onclick="closeSidebar()">
+      <i class="fas fa-globe"></i> Gifted Tech
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    Made with ♥ by <a href="https://github.com/mauricegift" target="_blank" rel="noopener">mauricegift</a>
+  </div>
+</nav>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <div class="header-left">
+    <button class="hamburger" id="hamburger" onclick="openSidebar()" aria-label="Open menu">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a class="logo" href="/">
+      <img src="https://files.catbox.moe/y1crqr.png" alt="stoken"/>
+      Free<span>Token</span>
+    </a>
+  </div>
+
+  <nav class="header-nav" aria-label="Primary navigation">
+    <a href="#token"><i class="fas fa-key"></i> Token</a>
+    <a href="#usage"><i class="fas fa-code"></i> Usage</a>
+    <a href="#endpoints"><i class="fas fa-plug"></i> Endpoints</a>
+  </nav>
+
+  <div class="header-right">
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+      <i class="fas fa-sun" id="theme-icon"></i>
+    </button>
+    <a class="btn-sm" href="token.json" target="_blank">
+      <i class="fas fa-bolt"></i> Get Token
+    </a>
+  </div>
+</header>
+
+<!-- ─── MAIN PAGE ─── -->
+<main class="page">
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-badge">
-      <span class="pulse-dot"></span>
-      Live &amp; Refreshing Every 20 Minutes
+    <div data-aos="fade-down" data-aos-duration="600">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        Live · Refreshes Every 20 Minutes
+      </div>
     </div>
-    <h1>Free <em>Spotify</em><br/>Access Token</h1>
-    <p>A continuously refreshed Spotify Web Player access token. No login, no API keys, no rate limits on your end.</p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="tokens.json" target="_blank">
-        <i class="fas fa-bolt"></i> Get Token JSON
+    <h1 data-aos="fade-up" data-aos-duration="700" data-aos-delay="80">
+      Free <em>Spotify</em><br/>Access Token
+    </h1>
+    <p data-aos="fade-up" data-aos-duration="700" data-aos-delay="160">
+      A continuously refreshed Spotify Web Player access token. No login, no API keys, no cost — just fetch and use.
+    </p>
+    <div class="hero-actions" data-aos="fade-up" data-aos-duration="700" data-aos-delay="240">
+      <a class="btn btn-primary" href="token.json" target="_blank">
+        <i class="fas fa-bolt"></i> Get token.json
       </a>
       <a class="btn btn-outline" href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener">
         <i class="fab fa-github"></i> View Source
@@ -408,17 +584,17 @@
 
   <!-- Stats -->
   <div class="stats">
-    <div class="stat-card">
+    <div class="stat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="0">
       <div class="stat-icon">🎵</div>
       <div class="stat-value">1</div>
       <div class="stat-label">Active Token</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="80">
       <div class="stat-icon">⏱️</div>
       <div class="stat-value">20m</div>
-      <div class="stat-label">Refresh Interval</div>
+      <div class="stat-label">Refresh Rate</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="160">
       <div class="stat-icon">🔓</div>
       <div class="stat-value">Free</div>
       <div class="stat-label">No Auth Needed</div>
@@ -426,181 +602,313 @@
   </div>
 
   <!-- Live Token -->
-  <div class="section">
-    <div class="section-title">Live Token</div>
-    <div class="token-card">
+  <div class="section" id="token">
+    <div class="section-title" data-aos="fade-right" data-aos-duration="500">Live Token</div>
+    <div class="token-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="60">
       <div class="token-header">
         <div class="token-header-left">
-          <span class="token-type">Bearer</span>
+          <span class="badge badge-green">Bearer</span>
+          <span class="badge badge-blue">Web Player</span>
           <span class="token-expiry" id="expiry-text">Loading...</span>
         </div>
         <button class="copy-btn" id="copy-btn" onclick="copyToken()">
-          <i class="far fa-copy"></i> Copy
+          <i class="far fa-copy"></i> Copy Token
         </button>
       </div>
       <div class="token-body" id="token-display">
         <span class="token-loading"><span class="spinner"></span>&nbsp; Fetching token...</span>
       </div>
       <div class="token-footer">
-        <span>Last updated: <span id="last-updated">—</span></span>
-        <span class="token-url"><a href="tokens.json" target="_blank">stoken.giftedtech.co.ke/tokens.json</a></span>
+        <span>Updated: <span id="last-updated">—</span></span>
+        <span class="token-url">
+          <a href="token.json" target="_blank">stoken.giftedtech.co.ke/token.json</a>
+        </span>
       </div>
     </div>
   </div>
 
   <!-- Usage -->
-  <div class="section">
-    <div class="section-title">Usage</div>
-    <div class="code-tabs">
-      <div class="code-tab active" onclick="switchTab(this,'js')">JavaScript</div>
-      <div class="code-tab" onclick="switchTab(this,'python')">Python</div>
-      <div class="code-tab" onclick="switchTab(this,'curl')">cURL</div>
-    </div>
+  <div class="section" id="usage">
+    <div class="section-title" data-aos="fade-right" data-aos-duration="500">Usage Examples</div>
+    <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="60">
+      <div class="code-tabs-wrapper">
+        <div class="code-tabs">
+          <div class="code-tab active" onclick="switchTab(this,'js')">
+            <i class="fab fa-js-square"></i> JavaScript
+          </div>
+          <div class="code-tab" onclick="switchTab(this,'python')">
+            <i class="fab fa-python"></i> Python
+          </div>
+          <div class="code-tab" onclick="switchTab(this,'curl')">
+            <i class="fas fa-terminal"></i> cURL
+          </div>
+        </div>
 
-    <div class="code-block active" id="tab-js">
-      <button class="code-copy" onclick="copyCode('js')">Copy</button>
-      <pre><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://stoken.giftedtech.co.ke/tokens.json'</span>);
-<span class="kw">const</span> { token } = <span class="kw">await</span> res.<span class="fn">json</span>();
+        <div class="code-block active" id="tab-js">
+          <button class="code-copy" onclick="copyCode('js')">
+            <i class="far fa-copy"></i> Copy
+          </button>
+          <pre><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>);
+<span class="kw">const</span> { token, token_type } = <span class="kw">await</span> res.<span class="fn">json</span>();
 
-<span class="cmt">// Use with any Spotify API endpoint</span>
+<span class="cmt">// Use with any public Spotify API endpoint</span>
 <span class="kw">const</span> data = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.spotify.com/v1/browse/new-releases'</span>, {
-  headers: { Authorization: <span class="str">`Bearer ${token}`</span> }
-}).<span class="fn">then</span>(r => r.<span class="fn">json</span>());</pre>
-    </div>
+  headers: { Authorization: <span class="str">`${token_type} ${token}`</span> }
+}).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
 
-    <div class="code-block" id="tab-python">
-      <button class="code-copy" onclick="copyCode('python')">Copy</button>
-      <pre><span class="kw">import</span> requests
+console.<span class="fn">log</span>(data);</pre>
+        </div>
 
-res = requests.<span class="fn">get</span>(<span class="str">'https://stoken.giftedtech.co.ke/tokens.json'</span>).<span class="fn">json</span>()
+        <div class="code-block" id="tab-python">
+          <button class="code-copy" onclick="copyCode('python')">
+            <i class="far fa-copy"></i> Copy
+          </button>
+          <pre><span class="kw">import</span> requests
+
+res = requests.<span class="fn">get</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>).<span class="fn">json</span>()
 token = res[<span class="str">'token'</span>]
+token_type = res[<span class="str">'token_type'</span>]  <span class="cmt"># 'Bearer'</span>
 
-<span class="cmt"># Use with any Spotify API endpoint</span>
+<span class="cmt"># Use with any public Spotify API endpoint</span>
 data = requests.<span class="fn">get</span>(
     <span class="str">'https://api.spotify.com/v1/browse/new-releases'</span>,
-    headers={<span class="str">'Authorization'</span>: <span class="fn">f</span><span class="str">'Bearer {token}'</span>}
-).<span class="fn">json</span>()</pre>
-    </div>
+    headers={<span class="str">'Authorization'</span>: <span class="fn">f</span><span class="str">'{token_type} {token}'</span>}
+).<span class="fn">json</span>()
 
-    <div class="code-block" id="tab-curl">
-      <button class="code-copy" onclick="copyCode('curl')">Copy</button>
-      <pre><span class="cmt"># Fetch token and call Spotify API in one line</span>
-TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/tokens.json \
-  | python3 -c <span class="str">"import sys,json; print(json.load(sys.stdin)['token'])"</span>)
+<span class="fn">print</span>(data)</pre>
+        </div>
 
-<span class="fn">curl</span> -H <span class="str">"Authorization: Bearer $TOKEN"</span> \
-  https://api.spotify.com/v1/browse/new-releases</pre>
+        <div class="code-block" id="tab-curl">
+          <button class="code-copy" onclick="copyCode('curl')">
+            <i class="far fa-copy"></i> Copy
+          </button>
+          <pre><span class="cmt"># One-liner: fetch token and call Spotify API</span>
+TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/token.json \
+  | python3 -c <span class="str">"import sys,json; d=json.load(sys.stdin); print(d['token'])"</span>)
+
+<span class="fn">curl</span> -s -H <span class="str">"Authorization: Bearer $TOKEN"</span> \
+  <span class="str">"https://api.spotify.com/v1/browse/new-releases"</span> | python3 -m json.tool</pre>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Endpoints -->
-  <div class="section">
-    <div class="section-title">Supported Endpoints</div>
-    <div class="table-wrap">
+  <div class="section" id="endpoints">
+    <div class="section-title" data-aos="fade-right" data-aos-duration="500">Supported Endpoints</div>
+    <div class="table-wrap" data-aos="fade-up" data-aos-duration="600" data-aos-delay="60">
       <table>
         <thead>
           <tr><th>Endpoint</th><th>Description</th></tr>
         </thead>
         <tbody>
-          <tr><td>/v1/search</td><td>Search tracks, albums, artists, playlists</td></tr>
-          <tr><td>/v1/browse/new-releases</td><td>Latest album releases</td></tr>
-          <tr><td>/v1/browse/featured-playlists</td><td>Spotify featured playlists</td></tr>
-          <tr><td>/v1/browse/categories</td><td>Browse music categories</td></tr>
-          <tr><td>/v1/albums/{id}</td><td>Album details &amp; tracks</td></tr>
-          <tr><td>/v1/artists/{id}</td><td>Artist details &amp; discography</td></tr>
-          <tr><td>/v1/tracks/{id}</td><td>Track details &amp; metadata</td></tr>
-          <tr><td>/v1/recommendations</td><td>Personalised track recommendations</td></tr>
-          <tr><td>/v1/audio-features/{id}</td><td>Audio features &amp; analysis</td></tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="0">
+            <td>/v1/search</td><td>Search tracks, albums, artists &amp; playlists</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="40">
+            <td>/v1/browse/new-releases</td><td>Latest album releases</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="80">
+            <td>/v1/browse/featured-playlists</td><td>Spotify featured playlists</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="120">
+            <td>/v1/browse/categories</td><td>Browse music categories</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="160">
+            <td>/v1/albums/{id}</td><td>Album details &amp; tracklist</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="200">
+            <td>/v1/artists/{id}</td><td>Artist profile &amp; discography</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="240">
+            <td>/v1/tracks/{id}</td><td>Track metadata &amp; details</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="280">
+            <td>/v1/recommendations</td><td>Track recommendations by seed</td>
+          </tr>
+          <tr data-aos="fade-left" data-aos-duration="400" data-aos-delay="320">
+            <td>/v1/audio-features/{id}</td><td>Audio features &amp; analysis data</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <footer>
-    <p>Built &amp; maintained by <a href="https://github.com/mauricegift" target="_blank" rel="noopener">mauricegift</a> · <a href="https://giftedtech.co.ke" target="_blank" rel="noopener">Gifted Tech</a></p>
-    <p style="margin-top:8px;font-size:.78rem;">Token refreshes automatically every 20 minutes · <a href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener">View on GitHub</a></p>
-  </footer>
-</div>
+  <!-- Notes -->
+  <div class="section" id="notes">
+    <div class="section-title" data-aos="fade-right" data-aos-duration="500">Notes</div>
 
+    <div class="note-card" data-aos="flip-left" data-aos-duration="500" data-aos-delay="0">
+      <i class="fas fa-clock"></i>
+      <div>Token expires ~1 hour after issue but is refreshed every <strong>20 minutes</strong>, so it's always fresh when you fetch it.</div>
+    </div>
+    <div class="note-card" data-aos="flip-left" data-aos-duration="500" data-aos-delay="80">
+      <i class="fas fa-user-lock"></i>
+      <div>This is an <strong>anonymous web-player token</strong> — works on all public endpoints. User-specific endpoints (liked songs, playlists) require OAuth login.</div>
+    </div>
+    <div class="note-card" data-aos="flip-left" data-aos-duration="500" data-aos-delay="160">
+      <i class="fas fa-server"></i>
+      <div>Runs 24/7 on a dedicated VPS by <a href="https://giftedtech.co.ke" target="_blank" rel="noopener" style="color:var(--green)">Gifted Tech</a>. Check <a href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener" style="color:var(--green)">GitHub</a> for uptime and commit history.</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer data-aos="fade-up" data-aos-duration="600">
+  <p>
+    Built &amp; maintained by
+    <a href="https://github.com/mauricegift" target="_blank" rel="noopener">mauricegift</a>
+    ·
+    <a href="https://giftedtech.co.ke" target="_blank" rel="noopener">Gifted Tech</a>
+  </p>
+  <p style="margin-top:8px;font-size:.78rem;opacity:.7;">
+    Token auto-refreshes every 20 min ·
+    <a href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener">View on GitHub</a>
+    ·
+    <a href="token.json" target="_blank">Raw JSON</a>
+  </p>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
-// ── Animated background ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════════════════════
+const html = document.documentElement;
+const themeIcon = document.getElementById('theme-icon');
+
+function applyTheme(t) {
+  html.setAttribute('data-theme', t);
+  themeIcon.className = t === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+  localStorage.setItem('stoken-theme', t);
+  drawBgForTheme(t);
+}
+
+function toggleTheme() {
+  applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+// Default: light. Load saved preference.
+applyTheme(localStorage.getItem('stoken-theme') || 'light');
+
+// ══════════════════════════════════════════════════════════
+// SIDEBAR
+// ══════════════════════════════════════════════════════════
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebar-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ══════════════════════════════════════════════════════════
+// ANIMATED CANVAS BACKGROUND
+// ══════════════════════════════════════════════════════════
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 let W, H, dots = [];
+let dotColor = 'rgba(29,185,84,';
+let gridColor = 'rgba(29,185,84,';
+
+function drawBgForTheme(t) {
+  dotColor  = t === 'dark' ? 'rgba(29,185,84,' : 'rgba(29,185,84,';
+  gridColor = t === 'dark' ? 'rgba(29,185,84,0.04)' : 'rgba(29,185,84,0.05)';
+}
 
 function resize() {
-  W = canvas.width = window.innerWidth;
+  W = canvas.width  = window.innerWidth;
   H = canvas.height = window.innerHeight;
 }
 
 function initDots() {
-  dots = Array.from({ length: 60 }, () => ({
+  dots = Array.from({ length: 55 }, () => ({
     x: Math.random() * W, y: Math.random() * H,
-    r: Math.random() * 1.6 + .4,
-    vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
-    o: Math.random() * .4 + .1,
+    r: Math.random() * 1.5 + .5,
+    vx: (Math.random() - .5) * .35,
+    vy: (Math.random() - .5) * .35,
+    o: Math.random() * .35 + .1,
   }));
 }
 
-function drawBg() {
+function drawFrame() {
   ctx.clearRect(0, 0, W, H);
-  // subtle grid
-  ctx.strokeStyle = 'rgba(29,185,84,0.03)';
+
+  // Grid
+  ctx.strokeStyle = gridColor;
   ctx.lineWidth = 1;
-  const gs = 80;
-  for (let x = 0; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
-  for (let y = 0; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
-  // moving dots
+  const gs = 90;
+  for (let x = 0; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Dots + connections
   for (const d of dots) {
     d.x += d.vx; d.y += d.vy;
     if (d.x < 0 || d.x > W) d.vx *= -1;
     if (d.y < 0 || d.y > H) d.vy *= -1;
     ctx.beginPath();
     ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(29,185,84,${d.o})`;
+    ctx.fillStyle = dotColor + d.o + ')';
     ctx.fill();
   }
-  // connect nearby dots
   for (let i = 0; i < dots.length; i++) {
     for (let j = i + 1; j < dots.length; j++) {
       const dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 130) {
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
         ctx.beginPath();
         ctx.moveTo(dots[i].x, dots[i].y);
         ctx.lineTo(dots[j].x, dots[j].y);
-        ctx.strokeStyle = `rgba(29,185,84,${(.07 * (1 - dist / 130)).toFixed(3)})`;
-        ctx.lineWidth = .5;
+        ctx.strokeStyle = dotColor + (.06 * (1 - dist/120)).toFixed(3) + ')';
+        ctx.lineWidth = .6;
         ctx.stroke();
       }
     }
   }
-  requestAnimationFrame(drawBg);
+  requestAnimationFrame(drawFrame);
 }
 
-resize(); initDots(); drawBg();
+resize(); initDots(); drawFrame();
 window.addEventListener('resize', () => { resize(); initDots(); });
 
-// ── Token fetch ─────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// AOS — init with mirror:true so it animates both ways
+// ══════════════════════════════════════════════════════════
+AOS.init({
+  duration: 600,
+  once: false,
+  mirror: true,
+  offset: 60,
+  easing: 'ease-out-cubic',
+});
+
+// ══════════════════════════════════════════════════════════
+// TOKEN FETCH
+// ══════════════════════════════════════════════════════════
 let currentToken = '';
 
 async function loadToken() {
   try {
-    const res = await fetch('tokens.json?t=' + Date.now());
+    const res = await fetch('token.json?t=' + Date.now());
     const data = await res.json();
     currentToken = data.token || '';
     document.getElementById('token-display').textContent = currentToken || 'No token available';
 
     if (data.expires_in) {
-      const mins = Math.floor(data.expires_in / 60);
-      document.getElementById('expiry-text').textContent = `Expires in ~${mins} min`;
+      const m = Math.floor(data.expires_in / 60);
+      document.getElementById('expiry-text').textContent = `Expires in ~${m} min`;
     }
     if (data.last_updated) {
       const d = new Date(data.last_updated);
-      document.getElementById('last-updated').textContent = d.toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' });
+      document.getElementById('last-updated').textContent =
+        d.toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' });
     }
-  } catch (e) {
-    document.getElementById('token-display').textContent = 'Failed to load token — try refreshing';
+  } catch {
+    document.getElementById('token-display').textContent = 'Failed to load — try refreshing the page';
     document.getElementById('expiry-text').textContent = 'Unavailable';
   }
 }
@@ -608,7 +916,9 @@ async function loadToken() {
 loadToken();
 setInterval(loadToken, 5 * 60 * 1000);
 
-// ── Copy token ──────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// COPY TOKEN
+// ══════════════════════════════════════════════════════════
 function copyToken() {
   if (!currentToken) return;
   navigator.clipboard.writeText(currentToken).then(() => {
@@ -617,12 +927,14 @@ function copyToken() {
     btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
     setTimeout(() => {
       btn.classList.remove('copied');
-      btn.innerHTML = '<i class="far fa-copy"></i> Copy';
-    }, 2000);
+      btn.innerHTML = '<i class="far fa-copy"></i> Copy Token';
+    }, 2200);
   });
 }
 
-// ── Code tabs ───────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// CODE TABS
+// ══════════════════════════════════════════════════════════
 function switchTab(el, id) {
   document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.code-block').forEach(b => b.classList.remove('active'));
@@ -630,38 +942,44 @@ function switchTab(el, id) {
   document.getElementById('tab-' + id).classList.add('active');
 }
 
-// ── Copy code ───────────────────────────────────────────────────────────────
 const codeSamples = {
-  js: `const res = await fetch('https://stoken.giftedtech.co.ke/tokens.json');
-const { token } = await res.json();
+  js: `const res = await fetch('https://stoken.giftedtech.co.ke/token.json');
+const { token, token_type } = await res.json();
 
+// Use with any public Spotify API endpoint
 const data = await fetch('https://api.spotify.com/v1/browse/new-releases', {
-  headers: { Authorization: \`Bearer \${token}\` }
-}).then(r => r.json());`,
+  headers: { Authorization: \`\${token_type} \${token}\` }
+}).then(r => r.json());
+
+console.log(data);`,
+
   python: `import requests
 
-res = requests.get('https://stoken.giftedtech.co.ke/tokens.json').json()
+res = requests.get('https://stoken.giftedtech.co.ke/token.json').json()
 token = res['token']
+token_type = res['token_type']  # 'Bearer'
 
+# Use with any public Spotify API endpoint
 data = requests.get(
     'https://api.spotify.com/v1/browse/new-releases',
-    headers={'Authorization': f'Bearer {token}'}
-).json()`,
-  curl: `TOKEN=$(curl -s https://stoken.giftedtech.co.ke/tokens.json \\
-  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+    headers={'Authorization': f'{token_type} {token}'}
+).json()
 
-curl -H "Authorization: Bearer $TOKEN" \\
-  https://api.spotify.com/v1/browse/new-releases`,
+print(data)`,
+
+  curl: `# One-liner: fetch token and call Spotify API
+TOKEN=$(curl -s https://stoken.giftedtech.co.ke/token.json \\
+  | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['token'])")
+
+curl -s -H "Authorization: Bearer $TOKEN" \\
+  "https://api.spotify.com/v1/browse/new-releases" | python3 -m json.tool`,
 };
 
 function copyCode(lang) {
   navigator.clipboard.writeText(codeSamples[lang]).then(() => {
-    const btns = document.querySelectorAll('.code-copy');
-    const activeBlock = document.getElementById('tab-' + lang);
-    const btn = activeBlock.querySelector('.code-copy');
-    const orig = btn.textContent;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = orig, 2000);
+    const btn = document.getElementById('tab-' + lang).querySelector('.code-copy');
+    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 2000);
   });
 }
 </script>
