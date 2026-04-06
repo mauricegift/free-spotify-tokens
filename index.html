@@ -241,7 +241,7 @@ header {
 /* ═══════════════════════════ HERO ═══════════════════════════ */
 .hero {
   text-align: center;
-  padding: 72px 0 56px;
+  padding: 36px 0 40px;
 }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
@@ -470,7 +470,7 @@ footer a:hover { text-decoration: underline; }
   .header-nav { display: none; }
   .stats { grid-template-columns: 1fr 1fr; }
   .stats .stat-card:last-child { grid-column: 1/-1; }
-  .hero { padding: 48px 0 36px; }
+  .hero { padding: 24px 0 28px; }
   .hero-actions { flex-wrap: nowrap; justify-content: center; gap: 8px; }
   .hero-actions .btn { padding: 10px 18px; font-size: 0.82rem; white-space: nowrap; }
   .token-header { flex-wrap: wrap; gap: 10px; }
@@ -673,15 +673,16 @@ footer a:hover { text-decoration: underline; }
           <button class="code-copy" onclick="copyCode('js')">
             <i class="far fa-copy"></i> Copy
           </button>
-          <pre><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>);
-<span class="kw">const</span> { token, token_type } = <span class="kw">await</span> res.<span class="fn">json</span>();
+          <pre><span class="kw">const</span> { token, token_type } = <span class="kw">await</span>
+  <span class="fn">fetch</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
 
-<span class="cmt">// Use with any public Spotify API endpoint</span>
-<span class="kw">const</span> data = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.spotify.com/v1/browse/new-releases'</span>, {
-  headers: { Authorization: <span class="str">`${token_type} ${token}`</span> }
-}).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
+<span class="cmt">// Search "Alan Walker Spectre"</span>
+<span class="kw">const</span> data = <span class="kw">await</span> <span class="fn">fetch</span>(
+  <span class="str">'https://api.spotify.com/v1/search?q=Alan+Walker+Spectre&amp;type=track&amp;limit=5'</span>,
+  { headers: { Authorization: <span class="str">`${token_type} ${token}`</span> } }
+).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
 
-console.<span class="fn">log</span>(data);</pre>
+console.<span class="fn">log</span>(data.tracks.items);</pre>
         </div>
 
         <div class="code-block" id="tab-python">
@@ -691,28 +692,32 @@ console.<span class="fn">log</span>(data);</pre>
           <pre><span class="kw">import</span> requests
 
 res = requests.<span class="fn">get</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>).<span class="fn">json</span>()
-token = res[<span class="str">'token'</span>]
+token      = res[<span class="str">'token'</span>]
 token_type = res[<span class="str">'token_type'</span>]  <span class="cmt"># 'Bearer'</span>
 
-<span class="cmt"># Use with any public Spotify API endpoint</span>
+<span class="cmt"># Search "Alan Walker Spectre"</span>
 data = requests.<span class="fn">get</span>(
-    <span class="str">'https://api.spotify.com/v1/browse/new-releases'</span>,
+    <span class="str">'https://api.spotify.com/v1/search'</span>,
+    params={<span class="str">'q'</span>: <span class="str">'Alan Walker Spectre'</span>, <span class="str">'type'</span>: <span class="str">'track'</span>, <span class="str">'limit'</span>: <span class="str">5</span>},
     headers={<span class="str">'Authorization'</span>: <span class="fn">f</span><span class="str">'{token_type} {token}'</span>}
 ).<span class="fn">json</span>()
 
-<span class="fn">print</span>(data)</pre>
+<span class="fn">print</span>(data[<span class="str">'tracks'</span>][<span class="str">'items'</span>])</pre>
         </div>
 
         <div class="code-block" id="tab-curl">
           <button class="code-copy" onclick="copyCode('curl')">
             <i class="far fa-copy"></i> Copy
           </button>
-          <pre><span class="cmt"># One-liner: fetch token and call Spotify API</span>
+          <pre><span class="cmt"># Fetch token then search "Alan Walker Spectre"</span>
 TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/token.json \
-  | python3 -c <span class="str">"import sys,json; d=json.load(sys.stdin); print(d['token'])"</span>)
+  | python3 -c <span class="str">"import sys,json; print(json.load(sys.stdin)['token'])"</span>)
 
-<span class="fn">curl</span> -s -H <span class="str">"Authorization: Bearer $TOKEN"</span> \
-  <span class="str">"https://api.spotify.com/v1/browse/new-releases"</span> | python3 -m json.tool</pre>
+<span class="fn">curl</span> -sG -H <span class="str">"Authorization: Bearer $TOKEN"</span> \
+  --data-urlencode <span class="str">"q=Alan Walker Spectre"</span> \
+  --data-urlencode <span class="str">"type=track"</span> \
+  --data-urlencode <span class="str">"limit=5"</span> \
+  <span class="str">"https://api.spotify.com/v1/search"</span> | python3 -m json.tool</pre>
         </div>
 
         <div class="code-block" id="tab-php">
@@ -720,23 +725,17 @@ TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/token.js
             <i class="far fa-copy"></i> Copy
           </button>
           <pre><span class="kw">&lt;?php</span>
-<span class="cmt">// Fetch the token</span>
-$<span class="fn">data</span> = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>(
-    <span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>
-), <span class="kw">true</span>);
+$<span class="fn">res</span>       = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>), <span class="kw">true</span>);
+$<span class="fn">token</span>      = $<span class="fn">res</span>[<span class="str">'token'</span>];
+$<span class="fn">token_type</span> = $<span class="fn">res</span>[<span class="str">'token_type'</span>]; <span class="cmt">// 'Bearer'</span>
 
-$<span class="fn">token</span>      = $<span class="fn">data</span>[<span class="str">'token'</span>];
-$<span class="fn">token_type</span> = $<span class="fn">data</span>[<span class="str">'token_type'</span>]; <span class="cmt">// 'Bearer'</span>
-
-<span class="cmt">// Use with any public Spotify API endpoint</span>
-$<span class="fn">opts</span> = [<span class="str">'http'</span> =&gt; [
-    <span class="str">'header'</span> =&gt; <span class="str">"Authorization: $token_type $token\r\n"</span>
-]];
-$<span class="fn">ctx</span>  = <span class="fn">stream_context_create</span>($<span class="fn">opts</span>);
-$<span class="fn">body</span> = <span class="fn">file_get_contents</span>(
-    <span class="str">'https://api.spotify.com/v1/browse/new-releases'</span>, <span class="kw">false</span>, $<span class="fn">ctx</span>
-);
-<span class="fn">print_r</span>(<span class="fn">json_decode</span>($<span class="fn">body</span>, <span class="kw">true</span>));
+<span class="cmt">// Search "Alan Walker Spectre"</span>
+$<span class="fn">url</span>  = <span class="str">'https://api.spotify.com/v1/search?'</span> . <span class="fn">http_build_query</span>([
+    <span class="str">'q'</span> =&gt; <span class="str">'Alan Walker Spectre'</span>, <span class="str">'type'</span> =&gt; <span class="str">'track'</span>, <span class="str">'limit'</span> =&gt; <span class="str">5</span>
+]);
+$<span class="fn">opts</span> = [<span class="str">'http'</span> =&gt; [<span class="str">'header'</span> =&gt; <span class="str">"Authorization: $token_type $token\r\n"</span>]];
+$<span class="fn">data</span> = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>($<span class="fn">url</span>, <span class="kw">false</span>, <span class="fn">stream_context_create</span>($<span class="fn">opts</span>)), <span class="kw">true</span>);
+<span class="fn">print_r</span>($<span class="fn">data</span>[<span class="str">'tracks'</span>][<span class="str">'items'</span>]);
 <span class="kw">?&gt;</span></pre>
         </div>
 
@@ -746,26 +745,17 @@ $<span class="fn">body</span> = <span class="fn">file_get_contents</span>(
           </button>
           <pre><span class="kw">const</span> axios = <span class="fn">require</span>(<span class="str">'axios'</span>);
 
-<span class="kw">async function</span> <span class="fn">main</span>() {
-  <span class="cmt">// Fetch the token</span>
-  <span class="kw">const</span> { data } = <span class="kw">await</span> axios.<span class="fn">get</span>(
-    <span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>
-  );
-  <span class="kw">const</span> { token, token_type } = data;
+<span class="kw">const</span> { data: { token, token_type } } = <span class="kw">await</span> axios.<span class="fn">get</span>(
+  <span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>
+);
 
-  <span class="cmt">// Search for tracks</span>
-  <span class="kw">const</span> results = <span class="kw">await</span> axios.<span class="fn">get</span>(
-    <span class="str">'https://api.spotify.com/v1/search'</span>,
-    {
-      params: { q: <span class="str">'lofi chill'</span>, type: <span class="str">'track'</span>, limit: <span class="str">5</span> },
-      headers: { Authorization: <span class="str">`${token_type} ${token}`</span> }
-    }
-  );
+<span class="cmt">// Search "Alan Walker Spectre"</span>
+<span class="kw">const</span> { data } = <span class="kw">await</span> axios.<span class="fn">get</span>(<span class="str">'https://api.spotify.com/v1/search'</span>, {
+  params: { q: <span class="str">'Alan Walker Spectre'</span>, type: <span class="str">'track'</span>, limit: <span class="str">5</span> },
+  headers: { Authorization: <span class="str">`${token_type} ${token}`</span> }
+});
 
-  console.<span class="fn">log</span>(results.data.tracks.items);
-}
-
-<span class="fn">main</span>();</pre>
+console.<span class="fn">log</span>(data.tracks.items);</pre>
         </div>
       </div>
     </div>
@@ -963,13 +953,19 @@ AOS.init({
   duration: 700,
   once: false,
   mirror: true,
+  easing: 'ease-in-out',
   offset: 60,
-  delay: 0,
-  easing: 'ease-out-quad',
-  anchorPlacement: 'top-bottom',
 });
-// Re-run after images/fonts settle so nothing is missed
-window.addEventListener('load', () => AOS.refresh());
+
+// Safety net: if AOS never fires (CDN fail / JS error), make everything visible
+setTimeout(() => {
+  if (!document.documentElement.classList.contains('aos-initialized')) {
+    document.querySelectorAll('[data-aos]').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  }
+}, 1500);
 
 // ══════════════════════════════════════════════════════════
 // TOKEN FETCH
@@ -977,10 +973,21 @@ window.addEventListener('load', () => AOS.refresh());
 let currentToken = '';
 
 async function loadToken() {
+  const URLS = [
+    'https://raw.githubusercontent.com/mauricegift/free-spotify-token/main/token.json',
+    'https://stoken.giftedtech.co.ke/token.json',
+  ];
+  let data = null;
+  for (const url of URLS) {
+    try {
+      const res = await fetch(url + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) continue;
+      data = await res.json();
+      if (data && data.token) break;
+    } catch { continue; }
+  }
   try {
-    const res = await fetch('https://stoken.giftedtech.co.ke/token.json?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
+    if (!data || !data.token) throw new Error('no token');
     currentToken = data.token || '';
     document.getElementById('token-display').textContent = currentToken || 'No token available';
 
@@ -1029,79 +1036,69 @@ function switchTab(el, id) {
 }
 
 const codeSamples = {
-  js: `const res = await fetch('https://stoken.giftedtech.co.ke/token.json');
-const { token, token_type } = await res.json();
+  js: `const { token, token_type } = await
+  fetch('https://stoken.giftedtech.co.ke/token.json').then(r => r.json());
 
-// Use with any public Spotify API endpoint
-const data = await fetch('https://api.spotify.com/v1/browse/new-releases', {
-  headers: { Authorization: \`\${token_type} \${token}\` }
-}).then(r => r.json());
+// Search "Alan Walker Spectre"
+const data = await fetch(
+  'https://api.spotify.com/v1/search?q=Alan+Walker+Spectre&type=track&limit=5',
+  { headers: { Authorization: \`\${token_type} \${token}\` } }
+).then(r => r.json());
 
-console.log(data);`,
+console.log(data.tracks.items);`,
 
   python: `import requests
 
 res = requests.get('https://stoken.giftedtech.co.ke/token.json').json()
-token = res['token']
+token      = res['token']
 token_type = res['token_type']  # 'Bearer'
 
-# Use with any public Spotify API endpoint
+# Search "Alan Walker Spectre"
 data = requests.get(
-    'https://api.spotify.com/v1/browse/new-releases',
+    'https://api.spotify.com/v1/search',
+    params={'q': 'Alan Walker Spectre', 'type': 'track', 'limit': 5},
     headers={'Authorization': f'{token_type} {token}'}
 ).json()
 
-print(data)`,
+print(data['tracks']['items'])`,
 
-  curl: `# One-liner: fetch token and call Spotify API
+  curl: `# Fetch token then search "Alan Walker Spectre"
 TOKEN=$(curl -s https://stoken.giftedtech.co.ke/token.json \\
-  | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['token'])")
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
 
-curl -s -H "Authorization: Bearer $TOKEN" \\
-  "https://api.spotify.com/v1/browse/new-releases" | python3 -m json.tool`,
+curl -sG -H "Authorization: Bearer $TOKEN" \\
+  --data-urlencode "q=Alan Walker Spectre" \\
+  --data-urlencode "type=track" \\
+  --data-urlencode "limit=5" \\
+  "https://api.spotify.com/v1/search" | python3 -m json.tool`,
 
   php: `<?php
-// Fetch the token
-$data = json_decode(file_get_contents(
-    'https://stoken.giftedtech.co.ke/token.json'
-), true);
+$res        = json_decode(file_get_contents('https://stoken.giftedtech.co.ke/token.json'), true);
+$token      = $res['token'];
+$token_type = $res['token_type']; // 'Bearer'
 
-$token      = $data['token'];
-$token_type = $data['token_type']; // 'Bearer'
-
-// Use with any public Spotify API endpoint
-$opts = ['http' => [
-    'header' => "Authorization: $token_type $token\\r\\n"
-]];
-$ctx  = stream_context_create($opts);
-$body = file_get_contents(
-    'https://api.spotify.com/v1/browse/new-releases', false, $ctx
-);
-print_r(json_decode($body, true));
+// Search "Alan Walker Spectre"
+$url  = 'https://api.spotify.com/v1/search?' . http_build_query([
+    'q' => 'Alan Walker Spectre', 'type' => 'track', 'limit' => 5
+]);
+$opts = ['http' => ['header' => "Authorization: $token_type $token\\r\\n"]];
+$data = json_decode(file_get_contents($url, false, stream_context_create($opts)), true);
+print_r($data['tracks']['items']);
 ?>`,
 
   node: `const axios = require('axios');
 
-async function main() {
-  // Fetch the token
-  const { data } = await axios.get(
-    'https://stoken.giftedtech.co.ke/token.json'
-  );
-  const { token, token_type } = data;
+const { data: { token, token_type } } = await axios.get(
+  'https://stoken.giftedtech.co.ke/token.json'
+);
 
-  // Search for tracks
-  const results = await axios.get(
-    'https://api.spotify.com/v1/search',
-    {
-      params: { q: 'lofi chill', type: 'track', limit: 5 },
-      headers: { Authorization: \`\${token_type} \${token}\` }
-    }
-  );
+// Search "Alan Walker Spectre"
+const { data } = await axios.get('https://api.spotify.com/v1/search', {
+  params: { q: 'Alan Walker Spectre', type: 'track', limit: 5 },
+  headers: { Authorization: \`\${token_type} \${token}\` }
+});
 
-  console.log(results.data.tracks.items);
-}
-
-main();`,
+console.log(data.tracks.items);`,
 };
 
 function copyCode(lang) {
