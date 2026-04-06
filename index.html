@@ -494,7 +494,7 @@ body.js-ready .sa.visible  { opacity:1; transform:none }
           <span class="badge badge-blue">Web Player</span>
           <span class="token-expiry" id="expiry-text">Loading...</span>
         </div>
-        <button class="copy-btn" id="copy-btn" onclick="copyToken()">
+        <button class="copy-btn" id="copy-btn" onclick="doCopy(document.getElementById('token-display').textContent.trim(),this,'<i class=\'far fa-copy\'></i> Copy Token')">
           <i class="far fa-copy"></i> Copy Token
         </button>
       </div>
@@ -570,6 +570,48 @@ body.js-ready .sa.visible  { opacity:1; transform:none }
   })();
   </script>
 
+  <!-- COPY HELPERS — isolated, no dependencies on any other script -->
+  <script>
+  function doCopy(text, btn, resetHtml) {
+    text = (text || '').trim();
+    if (!text || text === 'Fetching token...' || text.indexOf('Error:') === 0) return;
+    var done = function() {
+      var orig = resetHtml || btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+    };
+    /* Try modern clipboard API */
+    if (window.navigator && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function() { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:none;outline:none;box-shadow:none;background:transparent';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, 99999);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    if (done) done();
+  }
+  /* Read plain text from the pre tag inside a code block */
+  function doCopyCode(lang, btn) {
+    var block = document.getElementById('tab-' + lang);
+    if (!block) return;
+    var pre = block.querySelector('pre');
+    var text = pre ? pre.innerText || pre.textContent : '';
+    doCopy(text, btn, '<i class="far fa-copy"></i> Copy');
+  }
+  </script>
+
   <!-- USAGE -->
   <div class="section" id="usage">
     <div class="section-title sa sa-right">Usage Examples</div>
@@ -584,7 +626,7 @@ body.js-ready .sa.visible  { opacity:1; transform:none }
         </div>
 
         <div class="code-block active" id="tab-js">
-          <button class="code-copy" onclick="copyCode('js')"><i class="far fa-copy"></i> Copy</button>
+          <button class="code-copy" onclick="doCopyCode('js',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="kw">const</span> { token, token_type } = <span class="kw">await</span>
   <span class="fn">fetch</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
 
@@ -598,7 +640,7 @@ console.<span class="fn">log</span>(data.tracks.items);</pre>
         </div>
 
         <div class="code-block" id="tab-python">
-          <button class="code-copy" onclick="copyCode('python')"><i class="far fa-copy"></i> Copy</button>
+          <button class="code-copy" onclick="doCopyCode('python',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="kw">import</span> requests
 
 res        = requests.<span class="fn">get</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>).<span class="fn">json</span>()
@@ -616,7 +658,7 @@ data = requests.<span class="fn">get</span>(
         </div>
 
         <div class="code-block" id="tab-curl">
-          <button class="code-copy" onclick="copyCode('curl')"><i class="far fa-copy"></i> Copy</button>
+          <button class="code-copy" onclick="doCopyCode('curl',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="cmt"># Fetch token then search "Alan Walker Spectre"</span>
 TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/token.json \
   | python3 -c <span class="str">"import sys,json; print(json.load(sys.stdin)['token'])"</span>)
@@ -629,7 +671,7 @@ TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/token.js
         </div>
 
         <div class="code-block" id="tab-php">
-          <button class="code-copy" onclick="copyCode('php')"><i class="far fa-copy"></i> Copy</button>
+          <button class="code-copy" onclick="doCopyCode('php',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="kw">&lt;?php</span>
 $res        = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>), <span class="kw">true</span>);
 $token      = $res[<span class="str">'token'</span>];
@@ -646,7 +688,7 @@ $data = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</
         </div>
 
         <div class="code-block" id="tab-node">
-          <button class="code-copy" onclick="copyCode('node')"><i class="far fa-copy"></i> Copy</button>
+          <button class="code-copy" onclick="doCopyCode('node',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="kw">const</span> axios = <span class="fn">require</span>(<span class="str">'axios'</span>);
 
 <span class="kw">const</span> { data: { token, token_type } } = <span class="kw">await</span> axios.<span class="fn">get</span>(
