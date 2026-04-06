@@ -45,7 +45,7 @@
   --shadow:      0 2px 16px rgba(0,0,0,0.08);
   --shadow-lg:   0 8px 32px rgba(0,0,0,0.12);
   --overlay:     rgba(0,0,0,0.45);
-  --header-bg:   rgba(255,255,255,0.92);
+  --header-bg:   rgba(255,255,255,0.55);
   --code-bg:     #f8fafc;
   --code-text:   #1e293b;
   --sidebar-bg:  #ffffff;
@@ -67,7 +67,7 @@
   --shadow:      0 2px 16px rgba(0,0,0,0.4);
   --shadow-lg:   0 8px 40px rgba(0,0,0,0.5);
   --overlay:     rgba(0,0,0,0.65);
-  --header-bg:   rgba(10,10,10,0.92);
+  --header-bg:   rgba(10,10,10,0.55);
   --code-bg:     #0f172a;
   --code-text:   #e2e8f0;
   --sidebar-bg:  #141414;
@@ -180,10 +180,10 @@ header {
   margin: 12px 16px 0;
   background: var(--header-bg);
   border: 1px solid var(--border2);
-  border-radius: 16px;
+  border-radius: 999px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   transition: background .3s, border-color .3s;
 }
 .header-left { display: flex; align-items: center; gap: 10px; }
@@ -471,7 +471,8 @@ footer a:hover { text-decoration: underline; }
   .stats { grid-template-columns: 1fr 1fr; }
   .stats .stat-card:last-child { grid-column: 1/-1; }
   .hero { padding: 48px 0 36px; }
-  .hero-actions { flex-direction: column; align-items: center; }
+  .hero-actions { flex-wrap: nowrap; justify-content: center; gap: 8px; }
+  .hero-actions .btn { padding: 10px 18px; font-size: 0.82rem; white-space: nowrap; }
   .token-header { flex-wrap: wrap; gap: 10px; }
   .page { padding: 0 12px 40px; }
   table { font-size: 0.8rem; }
