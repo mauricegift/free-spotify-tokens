@@ -8,14 +8,14 @@ A free, continuously refreshed **Spotify Web Player access token** — no login,
 ![Interval](https://img.shields.io/badge/Refresh-30min-blue?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen?style=flat-square)
 
-🌐 Live Dashboard: [stoken.giftedtech.co.ke](https://stoken.giftedtech.co.ke)
+🌐 Live Dashboard: [stoken.gifted.co.ke](https://stoken.gifted.co.ke)
 
 ---
 
 ## Token JSON
 
 ```
-https://stoken.giftedtech.co.ke/token.json
+https://stoken.gifted.co.ke/token.json
 ```
 
 ### Structure
@@ -36,7 +36,7 @@ https://stoken.giftedtech.co.ke/token.json
 ### JavaScript / Node.js
 
 ```js
-const res = await fetch('https://stoken.giftedtech.co.ke/token.json');
+const res = await fetch('https://stoken.gifted.co.ke/token.json');
 const { token } = await res.json();
 
 const data = await fetch('https://api.spotify.com/v1/browse/new-releases', {
@@ -49,7 +49,7 @@ const data = await fetch('https://api.spotify.com/v1/browse/new-releases', {
 ```python
 import requests
 
-res = requests.get('https://stoken.giftedtech.co.ke/token.json').json()
+res = requests.get('https://stoken.gifted.co.ke/token.json').json()
 token = res['token']
 
 data = requests.get(
@@ -61,7 +61,7 @@ data = requests.get(
 ### cURL
 
 ```bash
-TOKEN=$(curl -s https://stoken.giftedtech.co.ke/token.json | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+TOKEN=$(curl -s https://stoken.gifted.co.ke/token.json | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
 curl -H "Authorization: Bearer $TOKEN" https://api.spotify.com/v1/browse/new-releases
 ```
 
@@ -89,7 +89,7 @@ Works with any **public** Spotify API endpoint, including:
 
 - Token expires roughly **1 hour** after issue but is refreshed every **30 minutes** so it's always fresh
 - This is an **anonymous web-player token** — user-specific endpoints (liked songs, playlists) require OAuth login
-- Runs 24/7 on a VPS by [Gifted Tech](https://giftedtech.co.ke)
+- Runs 24/7 on a VPS by [Gifted Tech](https://gifted.co.ke)
 
 ---
 
