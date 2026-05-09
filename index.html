@@ -7,12 +7,12 @@
 <meta name="description" content="A free, continuously refreshed Spotify access token updated every 30 minutes. No login, no API keys required."/>
 <meta name="keywords" content="spotify token, free spotify access token, spotify api, spotify web player token, bearer token"/>
 <meta name="author" content="mauricegift — Gifted Tech"/>
-<link rel="canonical" href="https://stoken.giftedtech.co.ke"/>
+<link rel="canonical" href="https://stoken.gifted.co.ke"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Free Spotify Token by Gifted Tech"/>
 <meta property="og:title" content="Free Spotify Token — Gifted Tech"/>
 <meta property="og:description" content="Free Spotify access token refreshed every 30 minutes. No login required."/>
-<meta property="og:url" content="https://stoken.giftedtech.co.ke"/>
+<meta property="og:url" content="https://stoken.gifted.co.ke"/>
 <meta property="og:image" content="https://files.catbox.moe/y1crqr.png"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
@@ -429,7 +429,7 @@ body.js-ready .sa.visible  { opacity:1; transform:none }
     <span class="sb-section">Links</span>
     <a class="sb-link" href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener" onclick="closeSidebar()"><i class="fab fa-github"></i> GitHub Repository</a>
     <a class="sb-link" href="token.json" target="_blank" onclick="closeSidebar()"><i class="fas fa-file-code"></i> token.json</a>
-    <a class="sb-link" href="https://me.giftedtech.co.ke" target="_blank" rel="noopener" onclick="closeSidebar()"><i class="fas fa-globe"></i> Gifted Tech</a>
+    <a class="sb-link" href="https://me.gifted.co.ke" target="_blank" rel="noopener" onclick="closeSidebar()"><i class="fas fa-globe"></i> Gifted Tech</a>
   </div>
   <div class="sb-footer">Made with ♥ by <a href="https://github.com/mauricegift" target="_blank" rel="noopener">mauricegift</a></div>
 </nav>
@@ -503,7 +503,7 @@ body.js-ready .sa.visible  { opacity:1; transform:none }
       </div>
       <div class="token-footer">
         <span>Updated: <span id="last-updated">—</span></span>
-        <span class="token-url"><a href="token.json" target="_blank">stoken.giftedtech.co.ke/token.json</a></span>
+        <span class="token-url"><a href="token.json" target="_blank">stoken.gifted.co.ke/token.json</a></span>
       </div>
     </div>
   </div>
@@ -512,7 +512,7 @@ body.js-ready .sa.visible  { opacity:1; transform:none }
   <script>
   (function() {
     var URLS = [
-      'https://stoken.giftedtech.co.ke/token.json?' + Date.now(),
+      'https://stoken.gifted.co.ke/token.json?' + Date.now(),
       'https://raw.githubusercontent.com/mauricegift/free-spotify-token/main/token.json?' + Date.now()
     ];
     var tried = 0;
@@ -628,7 +628,7 @@ body.js-ready .sa.visible  { opacity:1; transform:none }
         <div class="code-block active" id="tab-js">
           <button class="code-copy" onclick="doCopyCode('js',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="kw">const</span> { token, token_type } = <span class="kw">await</span>
-  <span class="fn">fetch</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
+  <span class="fn">fetch</span>(<span class="str">'https://stoken.gifted.co.ke/token.json'</span>).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
 
 <span class="cmt">// Search "Alan Walker Spectre"</span>
 <span class="kw">const</span> data = <span class="kw">await</span> <span class="fn">fetch</span>(
@@ -643,7 +643,7 @@ console.<span class="fn">log</span>(data.tracks.items);</pre>
           <button class="code-copy" onclick="doCopyCode('python',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="kw">import</span> requests
 
-res        = requests.<span class="fn">get</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>).<span class="fn">json</span>()
+res        = requests.<span class="fn">get</span>(<span class="str">'https://stoken.gifted.co.ke/token.json'</span>).<span class="fn">json</span>()
 token      = res[<span class="str">'token'</span>]
 token_type = res[<span class="str">'token_type'</span>]  <span class="cmt"># 'Bearer'</span>
 
@@ -660,7 +660,7 @@ data = requests.<span class="fn">get</span>(
         <div class="code-block" id="tab-curl">
           <button class="code-copy" onclick="doCopyCode('curl',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="cmt"># Fetch token then search "Alan Walker Spectre"</span>
-TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/token.json \
+TOKEN=$(<span class="fn">curl</span> -s https://stoken.gifted.co.ke/token.json \
   | python3 -c <span class="str">"import sys,json; print(json.load(sys.stdin)['token'])"</span>)
 
 <span class="fn">curl</span> -sG -H <span class="str">"Authorization: Bearer $TOKEN"</span> \
@@ -673,7 +673,7 @@ TOKEN=$(<span class="fn">curl</span> -s https://stoken.giftedtech.co.ke/token.js
         <div class="code-block" id="tab-php">
           <button class="code-copy" onclick="doCopyCode('php',this)"><i class="far fa-copy"></i> Copy</button>
           <pre><span class="kw">&lt;?php</span>
-$res        = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>(<span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>), <span class="kw">true</span>);
+$res        = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>(<span class="str">'https://stoken.gifted.co.ke/token.json'</span>), <span class="kw">true</span>);
 $token      = $res[<span class="str">'token'</span>];
 $token_type = $res[<span class="str">'token_type'</span>]; <span class="cmt">// 'Bearer'</span>
 
@@ -692,7 +692,7 @@ $data = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</
           <pre><span class="kw">const</span> axios = <span class="fn">require</span>(<span class="str">'axios'</span>);
 
 <span class="kw">const</span> { data: { token, token_type } } = <span class="kw">await</span> axios.<span class="fn">get</span>(
-  <span class="str">'https://stoken.giftedtech.co.ke/token.json'</span>
+  <span class="str">'https://stoken.gifted.co.ke/token.json'</span>
 );
 
 <span class="cmt">// Search "Alan Walker Spectre"</span>
@@ -741,7 +741,7 @@ console.<span class="fn">log</span>(data.tracks.items);</pre>
     </div>
     <div class="note-card sa sa-flip sa-d3">
       <i class="fas fa-server"></i>
-      <div>Runs 24/7 on a dedicated VPS by <a href="https://me.giftedtech.co.ke" target="_blank" rel="noopener" style="color:var(--green)">Gifted Tech</a>. Check <a href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener" style="color:var(--green)">GitHub</a> for uptime and commit history.</div>
+      <div>Runs 24/7 on a dedicated VPS by <a href="https://me.gifted.co.ke" target="_blank" rel="noopener" style="color:var(--green)">Gifted Tech</a>. Check <a href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener" style="color:var(--green)">GitHub</a> for uptime and commit history.</div>
     </div>
   </div>
 
@@ -749,7 +749,7 @@ console.<span class="fn">log</span>(data.tracks.items);</pre>
 
 <!-- FOOTER -->
 <footer class="sa sa-up">
-  <p>Built &amp; maintained by <a href="https://github.com/mauricegift" target="_blank" rel="noopener">mauricegift</a> · <a href="https://me.giftedtech.co.ke" target="_blank" rel="noopener">Gifted Tech</a></p>
+  <p>Built &amp; maintained by <a href="https://github.com/mauricegift" target="_blank" rel="noopener">mauricegift</a> · <a href="https://me.gifted.co.ke" target="_blank" rel="noopener">Gifted Tech</a></p>
   <p style="margin-top:8px;font-size:.78rem;opacity:.7;">
     Token auto-refreshes every 30 min ·
     <a href="https://github.com/mauricegift/free-spotify-token" target="_blank" rel="noopener">View on GitHub</a> ·
@@ -872,7 +872,7 @@ async function loadToken() {
   const updated = document.getElementById('last-updated');
 
   const URLS = [
-    'https://stoken.giftedtech.co.ke/token.json?' + Date.now(),
+    'https://stoken.gifted.co.ke/token.json?' + Date.now(),
     'https://raw.githubusercontent.com/mauricegift/free-spotify-token/main/token.json',
   ];
 
@@ -947,7 +947,7 @@ function switchTab(el, id) {
 
 const codeSamples = {
   js: `const { token, token_type } = await
-  fetch('https://stoken.giftedtech.co.ke/token.json').then(r => r.json());
+  fetch('https://stoken.gifted.co.ke/token.json').then(r => r.json());
 
 // Search "Alan Walker Spectre"
 const data = await fetch(
@@ -959,7 +959,7 @@ console.log(data.tracks.items);`,
 
   python: `import requests
 
-res        = requests.get('https://stoken.giftedtech.co.ke/token.json').json()
+res        = requests.get('https://stoken.gifted.co.ke/token.json').json()
 token      = res['token']
 token_type = res['token_type']  # 'Bearer'
 
@@ -973,7 +973,7 @@ data = requests.get(
 print(data['tracks']['items'])`,
 
   curl: `# Fetch token then search "Alan Walker Spectre"
-TOKEN=$(curl -s https://stoken.giftedtech.co.ke/token.json \\
+TOKEN=$(curl -s https://stoken.gifted.co.ke/token.json \\
   | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
 
 curl -sG -H "Authorization: Bearer $TOKEN" \\
@@ -983,7 +983,7 @@ curl -sG -H "Authorization: Bearer $TOKEN" \\
   "https://api.spotify.com/v1/search" | python3 -m json.tool`,
 
   php: `<?php
-$res        = json_decode(file_get_contents('https://stoken.giftedtech.co.ke/token.json'), true);
+$res        = json_decode(file_get_contents('https://stoken.gifted.co.ke/token.json'), true);
 $token      = $res['token'];
 $token_type = $res['token_type']; // 'Bearer'
 
@@ -999,7 +999,7 @@ print_r($data['tracks']['items']);
   node: `const axios = require('axios');
 
 const { data: { token, token_type } } = await axios.get(
-  'https://stoken.giftedtech.co.ke/token.json'
+  'https://stoken.gifted.co.ke/token.json'
 );
 
 // Search "Alan Walker Spectre"
